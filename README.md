@@ -1,0 +1,1 @@
+# C-WPF-Application-SciChart-implementation-
