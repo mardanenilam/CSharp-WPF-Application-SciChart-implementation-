@@ -1,0 +1,85 @@
+﻿<Window x:Class="SimpleDataViewerTest.Views.DataViewerView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SimpleDataViewerTest"
+        xmlns:mvvm="http://prismlibrary.com/"
+        xmlns:viewModels="clr-namespace:SimpleDataViewerTest.ViewModels"
+        mvvm:ViewModelLocator.AutoWireViewModel="True"
+        xmlns:s="http://schemas.abtsoftware.co.uk/scichart"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModels:DataViewerViewModel}"
+        Title="DataViewerView" BorderThickness="4" FontSize="50" FontWeight="ExtraBold" Height="800" Width="1200">
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="Foreground" Value="White"></Setter>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="36,40,38,0"></Setter>
+            <Setter Property="Height" Value="56"></Setter>
+            <Setter Property="BorderThickness" Value="1"></Setter>
+            <Setter Property="Background" Value="DarkRed"></Setter>
+            <Setter Property="HorizontalAlignment" Value="Left"></Setter>
+            <Setter Property="Width" Value="200"></Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" MinHeight="200"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Button Name="btnAdd" Content="Add Data File" Grid.Row="0" Grid.Column="0" Command="{Binding AddFileCommand }" Click="btnAdd_Click" Margin="36,0,38,0" />
+        <s:SciChartSurface Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" s:ThemeManager.Theme="BrightSpark" Background="White" BorderBrush="DimGray" BorderThickness="1"
+                           ChartTitle="{Binding ChartTitle}"
+                           RenderableSeries="{s:SeriesBinding RenderableSeriesViewModels }" Padding="20,0,0,0">
+            <s:SciChartSurface.XAxis>
+                <s:NumericAxis AxisTitle="{Binding XAxisTitle}"/>
+            </s:SciChartSurface.XAxis>
+            <s:SciChartSurface.YAxis>
+                <s:NumericAxis AxisTitle="{Binding YAxisTitle}"/>
+            </s:SciChartSurface.YAxis>
+            <s:SciChartSurface.ChartModifier>
+                <s:ModifierGroup>
+                    <s:RubberBandXyZoomModifier/>
+                    <s:ZoomExtentsModifier/>
+                </s:ModifierGroup>
+            </s:SciChartSurface.ChartModifier>
+
+        </s:SciChartSurface>        
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="0">
+            <Button x:Name="btnRemoveSelected" Content="Remove selected" Command="{Binding RemoveSelectedCommand}" Click="btnRemoveSelected_Click" />
+            <Button Name="btnClearList" Content="Clear List" Command="{Binding ClearListCommand}"  />
+        </StackPanel>
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="1" >
+            <Button x:Name="btnDeselectAll" Content="Deselect all" Command="{Binding DeselectAllCommand}"  />
+            <Button x:Name="btnFileSelect" Content="Select file" Command="{Binding FileSelectCommand}" />
+        </StackPanel>
+
+        <ListView Grid.Row="1" Grid.Column="0" HorizontalAlignment="Stretch" 
+                  ItemsSource="{Binding FileCollection}"
+                  SelectedItem="{Binding SelectedFile}"
+                  Margin="36,30,20,0" VerticalAlignment="Stretch" 
+                  SelectionChanged="ListView_SelectionChanged">
+            <ListView.ItemTemplate>
+                <DataTemplate x:Name="SingleLineDataTemplate">
+                    <StackPanel Orientation="Horizontal">
+                        <CheckBox IsChecked="{Binding IsChecked}" Margin="10,5,10,5" /> 
+                        <TextBlock FontSize="15" FontWeight="Medium" MaxWidth="300" TextTrimming="CharacterEllipsis" 
+                                   ToolTip="{Binding FilePath}" 
+                                   Text="{Binding FileName}" 
+                                   VerticalAlignment="Center" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </Grid>
+</Window>
